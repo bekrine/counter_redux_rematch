@@ -1,26 +1,40 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import {connect} from 'react-redux'
+import { useEffect } from 'react';
+function App({counterValue,message,incrementAsync,decrement,isIncrementing}) {
 
-function App() {
+ 
   return (
+    
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      
+      <h1>Counter{counterValue}</h1>
+       {
+        message !=="" && <p>{message}</p>
+      } 
+      <button 
+      disabled={isIncrementing}
+      onClick={()=>incrementAsync(2)}>{
+        isIncrementing ?"loading" :"+" 
+      }</button>
+      <button onClick={()=>decrement()}>-</button>
     </div>
   );
 }
 
-export default App;
+const mapStateToProps=(state)=>({
+  counterValue : state.counter.count,
+  isIncrementing : state.counter.isIncrementing,
+  message : state.toaster.message,
+})
+const mapActionsToProps=(dispatch)=>{
+  return {
+  decrement : dispatch.counter.decrement,
+  incrementAsync : dispatch.counter.incrementAsync,
+}
+}
+
+export default connect(
+  mapStateToProps,
+  mapActionsToProps
+)(App);
